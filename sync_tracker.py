@@ -156,10 +156,14 @@ def parse_claims(html: str) -> list[Claim]:
 
 def _resolve(path_str: str) -> Path | None:
     """Resolve a claim's path against the repo root, tolerating prefixes."""
+    ignored_parts = {".venv", "venv", "node_modules", ".git", ".astro", "dist", "__pycache__"}
     candidates = [ROOT / path_str]
     # Claims sometimes name a file without its directory ("generator.py").
     if "/" not in path_str:
-        candidates.extend(ROOT.rglob(path_str))
+        candidates.extend(
+            p for p in ROOT.rglob(path_str)
+            if not any(part in ignored_parts for part in p.parts)
+        )
     for candidate in candidates:
         if candidate.is_file():
             return candidate

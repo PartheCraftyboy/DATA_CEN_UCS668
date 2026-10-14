@@ -9,7 +9,14 @@ A real-time mission-control cockpit for the central trade-off in edge computer
 vision: **a model is not a system, and the most accurate model can be the one
 that fails.**
 
+![The cockpit running live on MobileNetV2 with active Hot Aisle Heat Haze degradation, 5x5 confusion matrix, and per-class recall](docs/images/cockpit-dark.png)
+
+<details>
+<summary>Click to view Paper / Light theme capture</summary>
+
 ![The cockpit running live on MobileNetV2 — buffer empty, ρ = 0.287, every frame inspected](docs/images/cockpit-live.png)
+
+</details>
 
 ---
 
