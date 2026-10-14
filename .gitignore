@@ -25,3 +25,28 @@ ucs668/
 # OS
 .DS_Store
 Thumbs.db
+
+# Node / Astro
+node_modules/
+.astro/
+dist/
+.output/
+.vercel/
+*.tsbuildinfo
+npm-debug.log*
+.env.*
+
+# Model weights cache (torchvision downloads to ~/.cache, but just in case)
+*.pth
+*.pt
+*.onnx
+
+# Local agent tooling — vendored third-party skills, not project source
+.claude/
+skills-lock.json
+
+# Archives and stray media — build the zip from a clean checkout instead
+*.zip
+*.tar.gz
+*.mp4
+*.mov
