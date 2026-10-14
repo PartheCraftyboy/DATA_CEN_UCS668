@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Terminal theme
+
+   Flat paper, one monospace family, thin rules between sections. Colour is
+   spent on meaning only: green = healthy or selected, warn = degraded,
+   alarm = frames lost or defects missed. Values are RGB triplets so Tailwind
+   can apply alpha (`bg-accent/20`). Keep in sync with src/lib/theme.ts.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root,
+  :root[data-theme="terminal"] {
+    color-scheme: light;
+    --bg: 228 230 221;
+    --sunk: 215 218 207;
+    --ink: 30 32 27;
+    --muted: 94 98 88;
+    --rule: 195 198 185;
+    --accent: 118 160 28;
+    --accent-ink: 76 106 13;
+    --warn: 148 98 0;
+    --alarm: 179 54 30;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: 28 30 26;
+    --sunk: 39 42 36;
+    --ink: 228 230 221;
+    --muted: 141 145 134;
+    --rule: 56 60 52;
+    --accent: 143 191 42;
+    --accent-ink: 169 210 74;
+    --warn: 217 163 58;
+    --alarm: 226 101 74;
+  }
+
+  :root[data-theme="paper"] {
+    color-scheme: light;
+    --bg: 250 250 247;
+    --sunk: 238 238 233;
+    --ink: 26 26 24;
+    --muted: 107 107 101;
+    --rule: 218 218 211;
+    --accent: 111 154 20;
+    --accent-ink: 74 106 11;
+    --warn: 148 98 0;
+    --alarm: 179 54 30;
+  }
+
+  html {
+    background: rgb(var(--bg));
+  }
+
+  body {
+    @apply bg-bg font-mono text-sm text-ink antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.35);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+  }
+
+  input[type="range"] {
+    accent-color: rgb(var(--accent));
+  }
+}
+
+@layer components {
+  /* A section of the screen: a heading row over a body, separated by a rule. */
+  .section {
+    @apply border-t border-rule py-4;
+  }
+
+  .section__head {
+    @apply mb-3 flex items-baseline justify-between gap-3;
+  }
+
+  .section__title {
+    @apply text-sm font-semibold text-ink;
+  }
+
+  .meta {
+    @apply text-xs text-muted;
+  }
+
+  /* Plain bordered button. */
+  .btn {
+    @apply inline-flex items-center gap-1.5 rounded border border-rule bg-transparent px-2.5 py-1
+           text-xs text-ink transition-colors hover:border-ink;
+  }
+
+  .btn[aria-pressed="true"] {
+    @apply border-accent bg-accent/15 text-accent-ink;
+  }
+
+  /* Row-style selectable list item (models, storms). */
+  .row {
+    @apply -mx-2 block w-[calc(100%+1rem)] rounded px-2 py-2 text-left transition-colors hover:bg-sunk;
+  }
+
+  .row[aria-pressed="true"] {
+    @apply bg-sunk;
+  }
+
+  /* A thin track with a filled portion, for any 0..1 quantity. */
+  .track {
+    @apply relative h-1.5 overflow-hidden rounded-sm bg-sunk;
+  }
+
+  .track__fill {
+    @apply absolute inset-y-0 left-0 transition-[width] duration-200;
+  }
+
+  kbd {
+    @apply rounded border border-rule px-1.5 py-px text-xs text-ink;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}

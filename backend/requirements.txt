@@ -1,0 +1,34 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  DATA CENTER EDGE-VISION COMMANDER — Backend Requirements
+#  UCS668 Edge AI & Robotics · Project 1
+#
+#  Install (CPU-only PyTorch keeps the edge-device fiction honest — we are
+#  deliberately NOT using CUDA, because the whole point of the simulation is
+#  that an edge inspection rover has no datacenter-grade accelerator):
+#
+#     python -m venv .venv && source .venv/bin/activate
+#     pip install -r requirements.txt \
+#         --extra-index-url https://download.pytorch.org/whl/cpu
+# ─────────────────────────────────────────────────────────────────────────────
+
+# --- Edge Vision Core ---------------------------------------------------------
+torch>=2.2.0
+torchvision>=0.17.0
+
+# --- Numerics & Image Synthesis -----------------------------------------------
+numpy>=1.26.0
+Pillow>=10.2.0
+scipy>=1.12.0            # Gaussian / bilateral kernels, map_coordinates warping
+
+# --- ASGI Web Layer -----------------------------------------------------------
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+websockets>=12.0
+pydantic>=2.6.0
+
+# --- Optional ----------------------------------------------------------------
+# opencv-python-headless>=4.9.0
+#   OpenCV gives us a hardware-tuned CLAHE and a true joint-bilateral filter.
+#   The codebase degrades gracefully to NumPy/SciPy implementations when it is
+#   absent (see app/simulation/augmentations.py :: _HAS_CV2), so it is listed
+#   as optional to keep the lab machines' install footprint small.

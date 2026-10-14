@@ -1,984 +1,396 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project 1 Tracker | UCS668: Edge AI & Robotics</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-primary: #0a0e17;
-      --bg-secondary: #121826;
-      --bg-card: #182234;
-      --bg-card-hover: #1e2b42;
-      --border-color: #24334c;
-      --border-accent: #3b82f6;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-blue: #38bdf8;
-      --accent-cyan: #06b6d4;
-      --accent-emerald: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
-      --accent-purple: #a855f7;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Fira Code', monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      line-height: 1.6;
-      padding: 24px;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-    }
-
-    /* Header */
-    header {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 28px 32px;
-      margin-bottom: 24px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
-
-    header::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
-    }
-
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .course-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: var(--accent-blue);
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .marks-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: var(--accent-emerald);
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 4px 14px;
-      border-radius: 9999px;
-    }
-
-    h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1.05rem;
-      max-width: 850px;
-    }
-
-    .header-meta {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .meta-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .meta-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-    }
-
-    .meta-value {
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    /* Agent Notice Banner */
-    .agent-banner {
-      background: rgba(168, 85, 247, 0.08);
-      border: 1px dashed rgba(168, 85, 247, 0.35);
-      border-radius: 12px;
-      padding: 12px 20px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .agent-banner-text {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.88rem;
-      color: #d8b4fe;
-    }
-
-    .agent-banner-btn {
-      background: rgba(168, 85, 247, 0.2);
-      border: 1px solid rgba(168, 85, 247, 0.4);
-      color: #f3e8ff;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-family: var(--font-mono);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .agent-banner-btn:hover {
-      background: rgba(168, 85, 247, 0.35);
-    }
-
-    /* Navigation Tabs */
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 24px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-    }
-
-    .tab-btn {
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 10px 18px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-    }
-
-    .tab-btn:hover {
-      color: var(--text-primary);
-    }
-
-    .tab-btn.active {
-      color: var(--accent-blue);
-      border-bottom-color: var(--accent-blue);
-      background: rgba(56, 189, 248, 0.05);
-      border-radius: 8px 8px 0 0;
-    }
-
-    .badge-count {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
-      font-size: 0.75rem;
-      padding: 2px 7px;
-      border-radius: 9999px;
-      font-family: var(--font-mono);
-    }
-
-    /* Tab Content Panels */
-    .tab-panel {
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-      animation: fadeIn 0.25s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Timeline View */
-    .timeline-container {
-      position: relative;
-      padding-left: 32px;
-    }
-
-    .timeline-container::before {
-      content: "";
-      position: absolute;
-      left: 11px;
-      top: 10px;
-      bottom: 10px;
-      width: 2px;
-      background: var(--border-color);
-    }
-
-    .timeline-card {
-      position: relative;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      transition: all 0.2s ease;
-    }
-
-    .timeline-card:hover {
-      border-color: rgba(56, 189, 248, 0.4);
-      background: var(--bg-card-hover);
-    }
-
-    .timeline-dot {
-      position: absolute;
-      left: -29px;
-      top: 22px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--bg-primary);
-      border: 3px solid var(--accent-blue);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-    }
-
-    .timeline-dot.completed {
-      border-color: var(--accent-emerald);
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-    }
-
-    .timeline-dot.in-progress {
-      border-color: var(--accent-amber);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
-    }
-
-    .timeline-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .timeline-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .status-pill {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .status-pill.completed {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: var(--accent-emerald);
-    }
-
-    .status-pill.in-progress {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: var(--accent-amber);
-    }
-
-    .status-pill.pending {
-      background: rgba(100, 116, 139, 0.15);
-      border: 1px solid rgba(100, 116, 139, 0.4);
-      color: var(--text-muted);
-    }
-
-    .timeline-date {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--accent-cyan);
-      margin-bottom: 8px;
-    }
-
-    .timeline-desc {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-    }
-
-    /* Prompts & Ideas View */
-    .prompts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-      gap: 20px;
-    }
-
-    .prompt-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      position: relative;
-    }
-
-    .prompt-card.highlight {
-      border-color: rgba(56, 189, 248, 0.5);
-      background: linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, var(--bg-card) 100%);
-    }
-
-    .prompt-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .prompt-id {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--accent-blue);
-    }
-
-    .prompt-source {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.05);
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-
-    .prompt-text {
-      background: rgba(10, 14, 23, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 8px;
-      padding: 14px;
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      color: #e2e8f0;
-      white-space: pre-wrap;
-      max-height: 160px;
-      overflow-y: auto;
-    }
-
-    .prompt-notes {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .prompt-footer {
-      margin-top: auto;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    /* Commits View */
-    .commits-table-container {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    th {
-      background: rgba(15, 23, 42, 0.8);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    td {
-      padding: 14px 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.9rem;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: var(--bg-card-hover);
-    }
-
-    .commit-hash {
-      font-family: var(--font-mono);
-      color: var(--accent-cyan);
-      background: rgba(6, 182, 212, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.82rem;
-    }
-
-    .commit-files {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    .file-tag {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-secondary);
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-
-    /* Course Modules Card Grid */
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 18px;
-    }
-
-    .module-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .module-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .module-num {
-      color: var(--accent-blue);
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .module-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .module-details {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    /* JSON Data / Agent Tab */
-    .json-box-wrapper {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .json-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    pre code {
-      display: block;
-      background: #090d16;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 16px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: #38bdf8;
-      overflow-x: auto;
-      max-height: 500px;
-    }
-
-    .btn {
-      background: var(--border-accent);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-
-    .btn:hover {
-      background: #2563eb;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.14);
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 20px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Edge-Vision Commander — Evaluation &amp; Viva Dashboard</title>
+<!--
+  A single self-contained file, no build step and no network dependencies, so
+  it opens by double-clicking it on any machine in the lab — including one with
+  no Node, no Python and no internet.
+
+  Two jobs:
+    1. Map every rubric line to the file and line of code that satisfies it,
+       so an examiner can jump straight to the evidence.
+    2. Hold the demo script and the viva answers, so the person presenting is
+       not improvising in front of the examiner.
+
+  Progress is stored in localStorage, wrapped in try/catch — a file:// page in
+  a private window can throw on access, and a checklist that crashes the page
+  it lives on would be a poor advertisement for the project.
+-->
+<style>
+  :root{
+    --bg:#090d16; --panel:#0e141f; --panel2:#141c2a; --line:#273243;
+    --txt:#cbd5e1; --dim:#64748b; --dimmer:#475569;
+    --cyan:#06b6d4; --green:#10b981; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+    --mono:'Fira Code','SF Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+    font-size:14px; line-height:1.55; padding:24px 16px 72px;
+    background-image:linear-gradient(rgba(56,69,90,.17) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(56,69,90,.17) 1px,transparent 1px);
+    background-size:44px 44px;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:22px;letter-spacing:-.4px;color:#f1f5f9}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.17em;font-family:var(--mono);
+     color:#94a3b8;margin-bottom:12px}
+  h3{font-size:14px;color:#e2e8f0;margin-bottom:4px}
+  code,.mono{font-family:var(--mono)}
+  a{color:var(--cyan)}
+
+  header{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+    padding:20px;margin-bottom:18px;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.05),inset 0 -3px 0 rgba(0,0,0,.5)}
+  .sub{font-family:var(--mono);font-size:11px;color:var(--dim);
+    text-transform:uppercase;letter-spacing:.16em;margin-top:6px}
+
+  .bar{height:12px;background:#05070c;border-radius:6px;overflow:hidden;margin-top:14px;
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.7)}
+  .bar>div{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));
+    width:0;transition:width .35s ease}
+  .scoreline{display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:12px;margin-top:7px;color:var(--dim)}
+  .scoreline b{font-size:19px;color:var(--green)}
+
+  section{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+    padding:18px;margin-bottom:14px}
+
+  .mod{border-left:3px solid var(--cyan);background:var(--panel2);border-radius:0 7px 7px 0;
+    padding:12px 14px;margin-bottom:10px}
+  .mod[data-m="1"]{border-color:var(--cyan)} .mod[data-m="2"]{border-color:var(--green)}
+  .mod[data-m="3"]{border-color:var(--purple)} .mod[data-m="4"]{border-color:var(--amber)}
+  .mod[data-m="5"]{border-color:var(--red)}
+  .modhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:8px}
+  .tag{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.14em;
+    color:var(--dim)}
+
+  ul.checks{list-style:none}
+  ul.checks li{display:flex;gap:9px;align-items:flex-start;padding:5px 0;
+    border-top:1px solid rgba(39,50,67,.55)}
+  ul.checks li:first-child{border-top:none}
+  input[type=checkbox]{margin-top:3px;width:15px;height:15px;accent-color:var(--green);
+    cursor:pointer;flex-shrink:0}
+  .claim{flex:1;min-width:0}
+  .where{font-family:var(--mono);font-size:10.5px;color:var(--dimmer);
+    display:block;margin-top:2px;word-break:break-all}
+  li.done .claim>span:first-child{color:var(--dim);text-decoration:line-through}
+
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:500;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em}
+  td.num{text-align:right}
+  tr.hi td{background:rgba(6,182,212,.07)}
+
+  .qa{border:1px solid var(--line);border-radius:8px;background:var(--panel2);
+    padding:13px;margin-bottom:9px}
+  .q{color:var(--cyan);font-weight:600;margin-bottom:6px}
+  .a{color:#cbd5e1;font-size:13.5px}
+  .a em{color:var(--amber);font-style:normal}
+
+  ol.script{list-style:none;counter-reset:step}
+  ol.script li{counter-increment:step;display:flex;gap:12px;padding:9px 0;
+    border-top:1px solid rgba(39,50,67,.55)}
+  ol.script li:first-child{border-top:none}
+  ol.script li::before{content:counter(step);flex-shrink:0;width:22px;height:22px;
+    border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;display:grid;place-items:center;color:var(--cyan)}
+  .beat{font-family:var(--mono);font-size:10px;color:var(--dimmer);
+    text-transform:uppercase;letter-spacing:.1em}
+
+  .grid2{display:grid;gap:12px;grid-template-columns:1fr}
+  @media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+
+  .note{font-size:12.5px;color:var(--dim);background:rgba(245,158,11,.07);
+    border:1px solid rgba(245,158,11,.3);border-radius:7px;padding:11px 13px}
+  .btn{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+    background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+    border-radius:6px;padding:7px 12px;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.6)}
+  .btn:hover{background:var(--line)}
+  .btn:active{transform:translateY(2px);box-shadow:none}
+  footer{text-align:center;font-family:var(--mono);font-size:11px;color:var(--dimmer);
+    margin-top:26px}
+</style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
-  <!-- Header -->
-  <header>
-    <div class="header-top">
-      <div class="course-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        UCS668: Edge AI and Robotics
-      </div>
-      <div class="marks-badge">
-        ★ Project 1: 10 Marks
-      </div>
-    </div>
+<header>
+  <h1>Data Center Edge-Vision Commander</h1>
+  <div class="sub">UCS668 · Edge AI and Robotics · Project 1 — Evaluation &amp; Viva Dashboard</div>
+  <div class="bar"><div id="bar"></div></div>
+  <div class="scoreline">
+    <span><b id="pct">0</b>% of evidence verified</span>
+    <span id="count">0 / 0 checks</span>
+    <button class="btn" id="reset">Reset</button>
+  </div>
+</header>
 
-    <h1 id="ui-project-title">Edge AI & Data Center Vision: Project Tracker</h1>
-    <p class="subtitle" id="ui-project-sub">
-      Choose any concept from Modules 1–5 and demonstrate it in a gamified or creative edge-deployable application.
-    </p>
+<!-- ───────────── Rubric → evidence ───────────── -->
+<section>
+  <h2>Syllabus Coverage — claim, and where the code proves it</h2>
 
-    <div class="header-meta">
-      <div class="meta-item">
-        <span class="meta-label">Course Instructor</span>
-        <span class="meta-value">Dr. Jhilik Bhattacharya</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Submission Window</span>
-        <span class="meta-value" style="color: var(--accent-amber);">12 – 16 October (Lab Slots)</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Evaluation Requirement</span>
-        <span class="meta-value">Live Demo & All Members Present</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Active Team</span>
-        <span class="meta-value" id="ui-team">Parth (Lead)</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Agent Interoperability Notice -->
-  <div class="agent-banner">
-    <div class="agent-banner-text">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
-      <strong>Agent-Readable Protocol:</strong> This file embeds standardized JSON data in <code>#agent-tracking-data</code>. AI agents & subagents can read, audit, and append updates directly.
-    </div>
-    <button class="agent-banner-btn" onclick="copyAgentJson()">📋 Copy JSON for Agent</button>
+  <div class="mod" data-m="1">
+    <div class="modhead"><h3>Module 1 · Understanding the Vision Problem</h3><span class="tag">5 classes · λ=25 · N_max=10</span></div>
+    <ul class="checks">
+      <li><input type="checkbox"><div class="claim"><span>Task formalised as 5-class inspection under an explicit latency and buffer constraint</span><span class="where">backend/app/__init__.py — CLASS_META, per-class severity and miss_cost</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Procedural 224×224×3 frame synthesiser with a distinct visual signature per class</span><span class="where">backend/app/simulation/generator.py — RackFrameGenerator._paint_*</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Class imbalance is deliberate (55% nominal), matching a real inspection stream</span><span class="where">generator.py — default class_weights; main.py — CockpitSession._sample_class</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Nuisance variation baked in: vignette, rolling-shutter banding, sensor read noise</span><span class="where">generator.py — _apply_camera_artifacts</span></div></li>
+    </ul>
   </div>
 
-  <!-- Navigation Tabs -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('timeline')">
-      ⏳ Milestones Timeline <span class="badge-count" id="count-timeline">5</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('prompts')">
-      💡 Idea Prompts & Requests <span class="badge-count" id="count-prompts">1</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('commits')">
-      📦 Git Commits <span class="badge-count" id="count-commits">1</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('modules')">
-      🎯 Course Modules 1-5 <span class="badge-count" id="count-modules">5</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('raw-json')">
-      🤖 Agent Raw JSON Data
-    </button>
+  <div class="mod" data-m="2">
+    <div class="modhead"><h3>Module 2 · Building Your First Vision Model</h3><span class="tag">3 switchable backbones</span></div>
+    <ul class="checks">
+      <li><input type="checkbox"><div class="claim"><span>SqueezeNet v1.1, MobileNetV2 and ResNet-18 loaded from torchvision, switchable live</span><span class="where">backend/app/models/zoo.py — MODEL_SPECS, EdgeModelZoo._build</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Each classifier head re-wired for 5 classes — and each family hides its head somewhere different</span><span class="where">zoo.py — EdgeModelZoo._replace_head</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Inference wrapped in microsecond timers via time.perf_counter()</span><span class="where">zoo.py — EdgeModelZoo.infer; profiler.py — benchmark_latency</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Returns predicted class, full softmax p ∈ ℝ⁵, latency, parameter count and tensor shapes</span><span class="where">zoo.py — InferenceResult.to_dict; describe()</span></div></li>
+    </ul>
   </div>
 
-  <!-- TAB 1: Timeline -->
-  <div id="tab-timeline" class="tab-panel active">
-    <div class="timeline-container" id="timeline-list">
-      <!-- Injected via JavaScript -->
+  <div class="mod" data-m="3">
+    <div class="modhead"><h3>Module 3 · Neural Network Design &amp; Architectures</h3><span class="tag">measured, not looked up</span></div>
+    <ul class="checks">
+      <li><input type="checkbox"><div class="claim"><span>Parameter counts iterated from the live nn.Parameter set</span><span class="where">backend/app/models/profiler.py — count_parameters</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>MAC/FLOP counts from forward hooks on real tensor shapes, grouped convs handled correctly</span><span class="where">profiler.py — count_macs, _conv_macs (the /groups term is the depthwise trick)</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Layer-by-layer 224→112→56→28→14→7 spatial cascade, read off real feature maps</span><span class="where">profiler.py — _resolution_cascade; frontend/src/components/ModelSwitcher.tsx — resolution_cascade</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Architectural contrast surfaced in the UI: Fire vs. Inverted Residual vs. Residual stage</span><span class="where">zoo.py — signature_block, architecture_note; frontend/src/components/ModelSwitcher.tsx — architecture_note</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>MAC efficiency exposed — why SqueezeNet beats MobileNetV2 on the clock despite more MACs</span><span class="where">zoo.py — describe() → mac_efficiency_m_per_ms</span></div></li>
+    </ul>
+  </div>
+
+  <div class="mod" data-m="4">
+    <div class="modhead"><h3>Module 4 · Data Augmentation &amp; Environmental Storms</h3><span class="tag">3 storms · 3 kernels</span></div>
+    <ul class="checks">
+      <li><input type="checkbox"><div class="claim"><span>Heat haze as a sinusoidal displacement field, x′ = x + A·sin(2πf·y + φ)</span><span class="where">backend/app/simulation/augmentations.py — heat_haze</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Strobe glare as an additive Gaussian specular lobe with highlight clipping</span><span class="where">augmentations.py — strobe_glare</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Particulate storm as signal-dependent Poisson shot noise plus clumped occlusion</span><span class="where">augmentations.py — intake_dust (Gaussian limit for real-time; exact_poisson flag)</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>CLAHE, unsharp mask and bilateral kernels, each timed and charged to the frame budget</span><span class="where">augmentations.py — clahe, unsharp_mask, bilateral, apply_filters</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Mitigation is multiplicative, so no filter stack drives severity to zero</span><span class="where">augmentations.py — residual_severity, StormBank.analytic_severity</span></div></li>
+    </ul>
+  </div>
+
+  <div class="mod" data-m="5">
+    <div class="modhead"><h3>Module 5 · Training, Optimisation &amp; Metrics</h3><span class="tag">live telemetry</span></div>
+    <ul class="checks">
+      <li><input type="checkbox"><div class="claim"><span>Live 5×5 row-normalised confusion matrix — diagonal reads as recall</span><span class="where">backend/app/metrics/confusion.py — ConfusionTracker; frontend ConfusionMatrix.tsx</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Windowed, not cumulative, so switching backbones mid-run visibly changes the matrix</span><span class="where">confusion.py — ConfusionTracker(window=300) and its rationale</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Macro-F1 chosen over micro, because a 55%-nominal stream makes micro meaningless</span><span class="where">confusion.py — macro_f1() docstring</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Expected Calibration Error with a reliability diagram; MCE and signed bias too</span><span class="where">confusion.py — CalibrationTracker; frontend/src/components/ParetoPlot.tsx — calibration</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Running cross-entropy loss and accuracy curves</span><span class="where">confusion.py — MetricsEngine._loss_curve / _accuracy_curve</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Three-axis Pareto frontier (accuracy × latency × power) with live drift trails</span><span class="where">confusion.py — ParetoAccumulator; frontend ParetoPlot.tsx</span></div></li>
+    </ul>
+  </div>
+
+  <div class="mod" data-m="1" style="border-color:#94a3b8">
+    <div class="modhead"><h3>Systems &amp; Engineering</h3><span class="tag">the part that makes it a project</span></div>
+    <ul class="checks">
+      <li><input type="checkbox"><div class="claim"><span>M/D/1/K finite-buffer queue with Poisson arrivals and deterministic service</span><span class="where">backend/app/simulation/queue_sim.py — EdgeQueueSimulator.tick</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Closed-form Pollaczek–Khinchine predictions displayed beside the live measurement</span><span class="where">queue_sim.py — theory()</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>25 FPS WebSocket telemetry with absolute-time pacing (no cumulative drift)</span><span class="where">backend/app/main.py — telemetry_socket.producer</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Decision path separated from pixel path to hold the 40 ms tick budget</span><span class="where">main.py — RENDER_PER_TICK, CALIBRATION_PERIOD_S and their rationale</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Conveyor sent as deltas, not the whole belt — 0.3 MB/s instead of 6 MB/s</span><span class="where">main.py — _conveyor_delta; frontend/src/lib/useTelemetry.ts — conveyor_new</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Astro islands: the page ships zero JS, only the cockpit hydrates</span><span class="where">frontend/src/pages/index.astro — &lt;Cockpit client:load /&gt;</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>React 19 useOptimistic for instant model/filter feedback before the socket round-trip</span><span class="where">ModelSwitcher.tsx, AugmentationStorms.tsx</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Offline mirror so the demo survives a dead backend, badged SIMULATED not LIVE</span><span class="where">frontend/src/lib/offlineSim.ts</span></div></li>
+      <li><input type="checkbox"><div class="claim"><span>Honest separation of measured vs. modelled, stated in code and in the UI</span><span class="where">zoo.py header "SIMULATION FIDELITY"; index.astro honesty box</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ───────────── Reference numbers ───────────── -->
+<section>
+  <h2>Reference Numbers — know these cold</h2>
+  <table>
+    <thead><tr>
+      <th>Backbone</th><th class="num">T_infer</th><th class="num">μ</th><th class="num">ρ at λ=25</th>
+      <th class="num">Params*</th><th class="num">MACs*</th><th class="num">Acc</th><th>Verdict</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="color:#10b981">SqueezeNet v1.1</td><td class="num">4.5 ms</td><td class="num">222 fps</td><td class="num">0.113</td>
+          <td class="num">0.73 M</td><td class="num">263 M</td><td class="num">88.5%</td><td>Fast, misses defects</td></tr>
+      <tr class="hi"><td style="color:#06b6d4">MobileNetV2</td><td class="num">11.5 ms</td><td class="num">87 fps</td><td class="num">0.288</td>
+          <td class="num">2.23 M</td><td class="num">300 M</td><td class="num">95.1%</td><td><b>Sweet spot</b></td></tr>
+      <tr><td style="color:#a855f7">ResNet-18</td><td class="num">44.0 ms</td><td class="num">22.7 fps</td><td class="num">1.100</td>
+          <td class="num">11.18 M</td><td class="num">1814 M</td><td class="num">97.6%</td><td style="color:#ef4444">Buffer overflow</td></tr>
+    </tbody>
+  </table>
+  <div class="note" style="margin-top:12px">
+    <b>* Expect to be asked why these differ from the published figures.</b>
+    The brief quotes 1.2 M / 3.5 M / 11.2 M parameters; we measure 0.73 M / 2.23 M / 11.18 M.
+    The gap is the classifier head. SqueezeNet's ImageNet head is a 512→1000 conv (~0.51 M
+    parameters) and MobileNetV2's is a 1280→1000 linear (~1.28 M); swapping both for 5-class
+    heads removes almost exactly the difference. ResNet-18 barely moves because its 512→1000
+    head is small relative to 11 M. This is a measurement, not a discrepancy — and being able
+    to explain it is worth more than matching the slide.
+  </div>
+</section>
+
+<!-- ───────────── Demo script ───────────── -->
+<section>
+  <h2>Demo Script — eight beats, about five minutes</h2>
+  <ol class="script">
+    <li><div><span class="beat">Open · 20s</span><div>Start on MobileNetV2, clean air. Point at ρ = 0.288, an empty buffer, a dominant diagonal. "This is the system working. Hold that picture."</div></div></li>
+    <li><div><span class="beat">The trap · 40s</span><div>Press <code>3</code> for ResNet-18. It is the <em>most accurate</em> model available. Let it run.</div></div></li>
+    <li><div><span class="beat">The failure · 50s</span><div>ρ climbs to 1.100, the buffer fills, the warning tone fires at 8/10, frames start dropping, the health bar bleeds out. Say the line: <b>a 97.6% model that drops a tenth of its input is not a 97.6% system.</b></div></div></li>
+    <li><div><span class="beat">Theory check · 30s</span><div>Point at the Pollaczek–Khinchine panel beside the live gauge. The closed form predicted this before the simulation ran it.</div></div></li>
+    <li><div><span class="beat">Overcorrect · 40s</span><div>Press <code>1</code> for SqueezeNet. Drops stop instantly — ρ = 0.113. Looks fixed.</div></div></li>
+    <li><div><span class="beat">The second failure · 50s</span><div>Trigger heat haze at full intensity. Watch the BEND row lose its diagonal and the false-negative rate climb. Nothing is being dropped and racks are <em>still</em> going uninspected — a different mechanism, the same outcome.</div></div></li>
+    <li><div><span class="beat">The trade · 40s</span><div>Deploy the bilateral kernel. Accuracy recovers; the service bar grows; headroom shrinks. Add all three kernels and the budget goes negative. <b>Robustness is bought with latency out of the same 40 ms.</b></div></div></li>
+    <li><div><span class="beat">Land it · 30s</span><div>Press <code>2</code>. MobileNetV2 at 11.5 ms leaves 28.5 ms of headroom — enough to run a kernel when a storm hits and still make the deadline. That headroom <em>is</em> the engineering answer.</div></div></li>
+  </ol>
+</section>
+
+<!-- ───────────── Viva Q&A ───────────── -->
+<section>
+  <h2>Viva — questions and answers</h2>
+  <div class="grid2">
+    <div>
+      <div class="qa"><div class="q">Why is MobileNetV2 optimal here?</div><div class="a">
+        Inverted residual blocks with linear bottlenecks decouple spatial filtering (a depthwise
+        3×3) from feature mixing (pointwise 1×1 convolutions). That cuts compute from 1.8 GFLOPs
+        to roughly 300 MFLOPs while keeping enough representational capacity to avoid SqueezeNet's
+        false-negative rate under distribution shift. At 11.5 ms it leaves 28.5 ms of headroom in
+        a 40 ms budget — <em>room to run a preprocessing kernel and still make the deadline.</em>
+      </div></div>
+
+      <div class="qa"><div class="q">What does the M/D/1 queue demonstrate?</div><div class="a">
+        That a model cannot be evaluated in isolation. ResNet-18 is 97.6% accurate and is a
+        system-level failure: at 44 ms it serves 22.7 fps against a 25 fps camera, so ρ = 1.10,
+        the backlog grows without bound, and the buffer discards frames. <em>Accuracy measured
+        only on the frames a model actually sees is a survivorship statistic.</em>
+      </div></div>
+
+      <div class="qa"><div class="q">How does augmentation improve robustness?</div><div class="a">
+        Under heat haze or strobe glare the baseline misreads fiber bends as nominal racks —
+        visible as the BEND row's mass sliding into column 0. Deploying edge preprocessing
+        restores diagonal dominance on the live matrix. But each kernel bills to the same
+        service-time budget as inference, so <em>there is no free robustness</em> — the panel
+        shows headroom going negative when you stack all three.
+      </div></div>
+
+      <div class="qa"><div class="q">Why Poisson arrivals if the camera is a fixed 25 FPS?</div><div class="a">
+        Jitter in capture, encode and transport makes inter-arrival times effectively memoryless
+        by the time frames reach the compute node. It is also the pessimistic assumption, and
+        buffers should be sized against the pessimistic case. Perfectly periodic arrivals into a
+        deterministic server would queue nothing at all until ρ hit exactly 1.
+      </div></div>
+    </div>
+
+    <div>
+      <div class="qa"><div class="q">Why is L_q for M/D/1 half the M/M/1 value?</div><div class="a">
+        Pollaczek–Khinchine gives L_q = λ²·E[S²] / (2(1−ρ)) for M/G/1. With deterministic service
+        E[S²] = E[S]², which collapses to ρ²/(2(1−ρ)) — exactly half the M/M/1 result. <em>Removing
+        variance from service time halves your buffering requirement at identical load, for free.</em>
+      </div></div>
+
+      <div class="qa"><div class="q">Why does SqueezeNet beat MobileNetV2 on the clock with more MACs?</div><div class="a">
+        Arithmetic intensity. Dense 3×3 convolutions saturate the vector units and reuse operands
+        from cache; depthwise convolutions do one multiply per loaded weight, so they are
+        memory-bandwidth bound and achieve poor utilisation. <em>MACs predict energy; they do not
+        predict latency.</em> The cockpit shows MACs-retired-per-millisecond for exactly this.
+      </div></div>
+
+      <div class="qa"><div class="q">Which parts are real and which are simulated?</div><div class="a">
+        Real: parameter counts, MAC counts, tensor shapes, inference latency (perf_counter around
+        a genuine forward pass), and preprocessing kernel cost. Modelled: which class is predicted
+        and with what confidence, because the backbones are not fine-tuned on labelled rack
+        photography — no such dataset exists. <em>Latency is measured; the label comes from a
+        documented capacity-limited confusion kernel.</em> Both are stated in the UI.
+      </div></div>
+
+      <div class="qa"><div class="q">Why is the most accurate model the worst calibrated?</div><div class="a">
+        Overconfidence grows with capacity (Guo et al., 2017) — ResNet-18 carries the highest ECE
+        in the zoo. It matters operationally: if you wanted to route only low-confidence frames to
+        the heavy model, you would need confidences you can trust. <em>An overconfident model never
+        asks for help.</em>
+      </div></div>
+
+      <div class="qa"><div class="q">Why macro-F1 and not accuracy?</div><div class="a">
+        The stream is 55% nominal, so accuracy is dominated by the easy majority class and reads
+        ~0.9 even for a model that catches no thermal hotspots at all. Macro-F1 weights the rare
+        critical classes equally. <em>Reporting accuracy on an imbalanced safety task is how you
+        ship a detector that detects nothing.</em>
+      </div></div>
     </div>
   </div>
+</section>
 
-  <!-- TAB 2: Idea Prompts -->
-  <div id="tab-prompts" class="tab-panel">
-    <div class="prompts-grid" id="prompts-list">
-      <!-- Injected via JavaScript -->
-    </div>
+<!-- ───────────── Run instructions ───────────── -->
+<section>
+  <h2>Running It</h2>
+  <table>
+    <tbody>
+      <tr><td style="color:#06b6d4">Backend</td><td><code>cd backend &amp;&amp; pip install -r requirements.txt &amp;&amp; uvicorn app.main:app --port 8000</code></td></tr>
+      <tr><td style="color:#10b981">Frontend</td><td><code>cd frontend &amp;&amp; npm install &amp;&amp; npm run dev</code> → <a href="http://localhost:4321">localhost:4321</a></td></tr>
+      <tr><td style="color:#a855f7">Tracker</td><td><code>python sync_tracker.py</code> — re-verifies every claim above against the source</td></tr>
+      <tr><td style="color:#f59e0b">Shortcuts</td><td><code>1</code> SqueezeNet · <code>2</code> MobileNetV2 · <code>3</code> ResNet-18 · <code>SPACE</code> hold · <code>R</code> reset</td></tr>
+    </tbody>
+  </table>
+  <div class="note" style="margin-top:12px">
+    If the backend is not running the cockpit falls back to an in-browser mirror of the same
+    simulation and badges itself <b>SIMULATED</b> rather than <b>LIVE</b>. The queueing
+    demonstration works identically either way — so a broken venv five minutes before the
+    viva is survivable.
   </div>
+</section>
 
-  <!-- TAB 3: Commits -->
-  <div id="tab-commits" class="tab-panel">
-    <div class="commits-table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Commit Hash</th>
-            <th>Message</th>
-            <th>Timestamp</th>
-            <th>Author</th>
-            <th>Files</th>
-          </tr>
-        </thead>
-        <tbody id="commits-list">
-          <!-- Injected via JavaScript -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- TAB 4: Modules 1-5 Alignment -->
-  <div id="tab-modules" class="tab-panel">
-    <div class="modules-grid" id="modules-list">
-      <!-- Injected via JavaScript -->
-    </div>
-  </div>
-
-  <!-- TAB 5: Raw JSON / Agent Interface -->
-  <div id="tab-raw-json" class="tab-panel">
-    <div class="json-box-wrapper">
-      <div class="json-actions">
-        <div>
-          <strong style="color: #fff;">Machine-Readable Data Island (<code>#agent-tracking-data</code>)</strong>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Agents can parse this JSON to extract history or append new events.</p>
-        </div>
-        <button class="btn btn-secondary" onclick="copyAgentJson()">Copy Raw JSON</button>
-      </div>
-      <pre><code id="json-preview">Loading...</code></pre>
-    </div>
-  </div>
-
-  <footer>
-    UCS668 Edge AI and Robotics | Data Center Vision | Submission Portal & Project Tracker
-  </footer>
+<footer>
+  Data Center Edge-Vision Commander · UCS668 · Thapar Institute of Engineering &amp; Technology
+</footer>
 </div>
 
-<!-- ========================================================================= -->
-<!-- AGENT MACHINE-READABLE DATA ISLAND (SINGLE SOURCE OF TRUTH)              -->
-<!-- Instructions for Agents:                                                  -->
-<!-- 1. Parse JSON inside script#agent-tracking-data                           -->
-<!-- 2. To append a commit, add an object to data.commits                      -->
-<!-- 3. To record a prompt, add an object to data.idea_prompts                 -->
-<!-- 4. To update a milestone status, mutate data.timeline                     -->
-<!-- ========================================================================= -->
-<script id="agent-tracking-data" type="application/json">
-{
-  "project": {
-    "title": "Edge AI & Data Center Vision - Project 1 (UCS668)",
-    "course_code": "UCS668",
-    "course_name": "Edge AI and Robotics: Data Center Vision",
-    "instructor": "Dr. Jhilik Bhattacharya",
-    "marks": 10,
-    "group_size_allowed": "1-4 students",
-    "submission_window": "12-16 October 2026 (In Lab Slots)",
-    "status": "Initialized - Idea Formulation & Repository Setup",
-    "team_members": [
-      "Parth"
-    ],
-    "course_url": "https://sites.google.com/thapar.edu/jhilikbhattacharya/courses/edge-ai-and-robotics-data-center-vision?pli=1&",
-    "repo_path": "/home/kalki/Pro/DC_project"
-  },
-  "course_modules_coverage": [
-    {
-      "module": 1,
-      "title": "Understanding the Vision Problem",
-      "status": "Mapped",
-      "summary": "Task identification (Classification vs Object Detection vs Segmentation), problem formulation, edge constraints, pipeline mapping.",
-      "project_hook": "Formulating the game as real-time visual decision making on the edge."
-    },
-    {
-      "module": 2,
-      "title": "Building Your First Vision Model",
-      "status": "Mapped",
-      "summary": "Image classification, transfer learning (MobileNetV2, ResNet, SqueezeNet), dataset loading, training loops, error analysis.",
-      "project_hook": "Fast edge inference classifier for instant player interaction and feedback."
-    },
-    {
-      "module": 3,
-      "title": "Neural Network Design & Architectures",
-      "status": "Mapped",
-      "summary": "Convolution filters, Max/Avg pooling, Linear layers, tensor shapes, parameters count, feature maps.",
-      "project_hook": "Interactive visualization of kernel activations or live feature maps during gameplay."
-    },
-    {
-      "module": 4,
-      "title": "Data Augmentation (Core Gamification)",
-      "status": "Core Concept",
-      "summary": "Rotation, brightness, contrast, noise, blur, affine transforms, CutMix, mosaics, background replacement.",
-      "project_hook": "Direct professor example: 'Mosaic Detective' game where randomly augmented objects must be identified or matched."
-    },
-    {
-      "module": 5,
-      "title": "Training & Optimization",
-      "status": "Mapped",
-      "summary": "Optimizers (SGD, Adam, RMSprop), loss functions (CrossEntropy, MSE), activation functions (ReLU, Sigmoid).",
-      "project_hook": "Live optimization game mini-mode or score multiplier based on loss convergence."
-    }
-  ],
-  "idea_prompts": [
-    {
-      "id": "PROMPT-001",
-      "timestamp": "2026-10-14T01:49:07+05:30",
-      "source": "User / Professor Specification",
-      "prompt": "Project 1: 10 marks\nGroups of max 4 students (1, 2,or 3 students also allowed in a group)\nSubmission: 12-16 October in your respective lab slots.\nCome prepared with the demo.\nAll members need to be present during showcasing it.\n\nExample topic:- Choose any concept in this course and demonstrate it in a gamified or creative manner.\nEx. a) A game which displays object mosaics, any object is randomly augmented and you need to find the matching object.\nb) Magic eraser",
-      "status": "Active / Selected for Implementation",
-      "notes": "Analyzing 3 high-impact gamified implementations matching Modules 1-5 with interactive Streamlit demo."
-    }
-  ],
-  "timeline": [
-    {
-      "id": "TL-001",
-      "date": "2026-10-14",
-      "milestone": "Project Initialization & Agent Tracker Setup",
-      "description": "Scraped course syllabus (Modules 1-5), initialized Git repository, created machine-readable track.html and sync CLI.",
-      "status": "Completed"
-    },
-    {
-      "id": "TL-002",
-      "date": "2026-10-14",
-      "milestone": "Game Concept & Architecture Selection",
-      "description": "Select game mechanics: 'Augmentation Mosaic Detective' (Option A) vs 'Edge Magic Eraser' (Option B) vs 'Kernel Vision Puzzle'.",
-      "status": "In Progress"
-    },
-    {
-      "id": "TL-003",
-      "date": "2026-10-14",
-      "milestone": "Computer Vision Core Engine & Edge Pipeline",
-      "description": "Implement OpenCV / PyTorch lightweight vision pipelines, real-time augmentation generator, and inference.",
-      "status": "Pending"
-    },
-    {
-      "id": "TL-004",
-      "date": "2026-10-15",
-      "milestone": "Streamlit Gamified Interface & Interactive Demo",
-      "description": "Build high-FPS interactive UI: timer, difficulty levels, sound/visual badges, latency counter, score leaderboard.",
-      "status": "Pending"
-    },
-    {
-      "id": "TL-005",
-      "date": "2026-10-15",
-      "milestone": "Lab Showcase Rehearsal & Submission Readiness",
-      "description": "Test edge latency, verify all group member talking points for lab evaluation (10 marks criteria).",
-      "status": "Pending"
-    }
-  ],
-  "commits": [
-    {
-      "hash": "deb0e381",
-      "timestamp": "2026-10-14T01:53:30+05:30",
-      "author": "Parth <parthsvault@gmail.com>",
-      "message": "feat: initialize project tracking, track.html, and sync utility",
-      "files": [
-        "(root)"
-      ]
-    }
-  ],
-  "agent_instructions": {
-    "protocol": "Antigravity Agentic Tracking Protocol v1.0",
-    "read_method": "JSON.parse(document.getElementById('agent-tracking-data').textContent)",
-    "write_method": "Update JSON text inside #agent-tracking-data, or run python sync_tracker.py",
-    "required_fields": [
-      "project",
-      "course_modules_coverage",
-      "idea_prompts",
-      "timeline",
-      "commits"
-    ]
-  }
-}
-</script>
-
 <script>
-  // DOM Rendering logic
-  function renderAll() {
-    const rawData = document.getElementById('agent-tracking-data').textContent;
-    const data = JSON.parse(rawData);
+(function () {
+  "use strict";
+  var KEY = "dcvc-tracker-v1";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox]'));
 
-    // Update Meta
-    document.getElementById('ui-project-title').textContent = data.project.title;
-    document.getElementById('ui-team').textContent = data.project.team_members.join(', ');
-
-    // Update Counts
-    document.getElementById('count-timeline').textContent = data.timeline.length;
-    document.getElementById('count-prompts').textContent = data.idea_prompts.length;
-    document.getElementById('count-commits').textContent = data.commits.length;
-    document.getElementById('count-modules').textContent = data.course_modules_coverage.length;
-
-    // Render Timeline
-    const tlContainer = document.getElementById('timeline-list');
-    tlContainer.innerHTML = '';
-    data.timeline.forEach(item => {
-      const statusClass = item.status.toLowerCase().replace(/\s+/g, '-');
-      const card = document.createElement('div');
-      card.className = 'timeline-card';
-      card.innerHTML = `
-        <div class="timeline-dot ${statusClass}"></div>
-        <div class="timeline-header">
-          <div class="timeline-title">${item.milestone}</div>
-          <span class="status-pill ${statusClass}">${item.status}</span>
-        </div>
-        <div class="timeline-date">${item.date} &bull; ${item.id}</div>
-        <div class="timeline-desc">${item.description}</div>
-      `;
-      tlContainer.appendChild(card);
-    });
-
-    // Render Prompts
-    const promptsContainer = document.getElementById('prompts-list');
-    promptsContainer.innerHTML = '';
-    data.idea_prompts.forEach((p, idx) => {
-      const card = document.createElement('div');
-      card.className = `prompt-card ${idx === 0 ? 'highlight' : ''}`;
-      card.innerHTML = `
-        <div class="prompt-card-header">
-          <span class="prompt-id">${p.id}</span>
-          <span class="prompt-source">${p.source}</span>
-        </div>
-        <div class="prompt-text">${p.prompt}</div>
-        <div class="prompt-notes"><strong>Analysis:</strong> ${p.notes}</div>
-        <div class="prompt-footer">
-          <span>Status: <strong>${p.status}</strong></span>
-          <span>${p.timestamp}</span>
-        </div>
-      `;
-      promptsContainer.appendChild(card);
-    });
-
-    // Render Commits
-    const commitsContainer = document.getElementById('commits-list');
-    commitsContainer.innerHTML = '';
-    data.commits.forEach(c => {
-      const row = document.createElement('tr');
-      const filesBadges = (c.files || []).map(f => `<span class="file-tag">${f}</span>`).join(' ');
-      row.innerHTML = `
-        <td><span class="commit-hash">${c.hash}</span></td>
-        <td style="font-weight: 500; color: #fff;">${c.message}</td>
-        <td style="color: var(--text-muted); font-size: 0.8rem;">${c.timestamp}</td>
-        <td style="color: var(--text-secondary);">${c.author}</td>
-        <td><div class="commit-files">${filesBadges}</div></td>
-      `;
-      commitsContainer.appendChild(row);
-    });
-
-    // Render Modules
-    const modulesContainer = document.getElementById('modules-list');
-    modulesContainer.innerHTML = '';
-    data.course_modules_coverage.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'module-card';
-      card.innerHTML = `
-        <div class="module-header">
-          <span class="module-num">Module ${m.module}</span>
-          <span class="status-pill completed">${m.status}</span>
-        </div>
-        <div class="module-title">${m.title}</div>
-        <div class="module-details">${m.summary}</div>
-        <div style="font-size: 0.82rem; color: var(--accent-cyan); margin-top: 6px;">
-          <strong>Project Integration:</strong> ${m.project_hook}
-        </div>
-      `;
-      modulesContainer.appendChild(card);
-    });
-
-    // Render Raw JSON Box
-    document.getElementById('json-preview').textContent = JSON.stringify(data, null, 2);
+  // localStorage can throw outright on a file:// page in a private window, so
+  // every access is guarded. A checklist must never take the page down.
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+  }
+  function save(state) {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
   }
 
-  function switchTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+  var state = load();
 
-    event.currentTarget.classList.add('active');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-  }
-
-  function copyAgentJson() {
-    const rawData = document.getElementById('agent-tracking-data').textContent;
-    navigator.clipboard.writeText(rawData.trim()).then(() => {
-      alert('Agent Tracking JSON copied to clipboard!');
-    }).catch(err => {
-      console.error('Failed to copy: ', err);
+  function paint() {
+    var done = 0;
+    boxes.forEach(function (box, i) {
+      var li = box.closest('li');
+      if (box.checked) { done++; li.classList.add('done'); }
+      else { li.classList.remove('done'); }
+      state[i] = box.checked;
     });
+    var pct = boxes.length ? Math.round((done / boxes.length) * 100) : 0;
+    document.getElementById('bar').style.width = pct + '%';
+    document.getElementById('pct').textContent = pct;
+    document.getElementById('count').textContent = done + ' / ' + boxes.length + ' checks';
   }
 
-  window.addEventListener('DOMContentLoaded', renderAll);
+  boxes.forEach(function (box, i) {
+    box.checked = !!state[i];
+    box.addEventListener('change', function () { paint(); save(state); });
+  });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; });
+    state = {};
+    paint();
+    save(state);
+  });
+
+  paint();
+})();
 </script>
-
 </body>
 </html>

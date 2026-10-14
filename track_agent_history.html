@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 1 Tracker | UCS668: Edge AI & Robotics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #121826;
+      --bg-card: #182234;
+      --bg-card-hover: #1e2b42;
+      --border-color: #24334c;
+      --border-accent: #3b82f6;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #38bdf8;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .course-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-blue);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .marks-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--accent-emerald);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 4px 14px;
+      border-radius: 9999px;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 850px;
+    }
+
+    .header-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .meta-value {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Agent Notice Banner */
+    .agent-banner {
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px dashed rgba(168, 85, 247, 0.35);
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .agent-banner-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: #d8b4fe;
+    }
+
+    .agent-banner-btn {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #f3e8ff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .agent-banner-btn:hover {
+      background: rgba(168, 85, 247, 0.35);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
+      background: rgba(56, 189, 248, 0.05);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .badge-count {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+    }
+
+    /* Tab Content Panels */
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Timeline View */
+    .timeline-container {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline-container::before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: var(--border-color);
+    }
+
+    .timeline-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .timeline-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: var(--bg-card-hover);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -29px;
+      top: 22px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 3px solid var(--accent-blue);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+
+    .timeline-dot.completed {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .timeline-dot.in-progress {
+      border-color: var(--accent-amber);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .timeline-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-pill.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--accent-emerald);
+    }
+
+    .status-pill.in-progress {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--accent-amber);
+    }
+
+    .status-pill.pending {
+      background: rgba(100, 116, 139, 0.15);
+      border: 1px solid rgba(100, 116, 139, 0.4);
+      color: var(--text-muted);
+    }
+
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+    }
+
+    .timeline-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Prompts & Ideas View */
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    .prompt-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+
+    .prompt-card.highlight {
+      border-color: rgba(56, 189, 248, 0.5);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, var(--bg-card) 100%);
+    }
+
+    .prompt-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .prompt-id {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+
+    .prompt-source {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .prompt-text {
+      background: rgba(10, 14, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .prompt-notes {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .prompt-footer {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Commits View */
+    .commits-table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--bg-card-hover);
+    }
+
+    .commit-hash {
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+    }
+
+    .commit-files {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .file-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* Course Modules Card Grid */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
+    }
+
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .module-num {
+      color: var(--accent-blue);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .module-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .module-details {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* JSON Data / Agent Tab */
+    .json-box-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .json-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    pre code {
+      display: block;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      max-height: 500px;
+    }
+
+    .btn {
+      background: var(--border-accent);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  
+    /* Pipeline and Architecture Diagrams */
+    .pipeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .pipeline-section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pipeline-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      position: relative;
+    }
+
+    .pipeline-step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .pipeline-step-card:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -6px rgba(6, 182, 212, 0.25);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: fit-content;
+    }
+
+    .step-badge.blue { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .step-badge.amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .step-badge.rose { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+    .step-badge.purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+    .step-badge.emerald { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .step-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .step-meta {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+    }
+
+    /* Parallax Layers Visual Breakdown */
+    .parallax-visual-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #060913;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .layer-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(15, 23, 42, 0.6);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .layer-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .layer-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      white-space: nowrap;
+    }
+
+    .layer-name {
+      font-weight: 600;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .layer-velocity {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+    }
+
+    /* 5-Class Target Grid */
+    .classes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .class-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .class-id {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .class-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .class-symptom {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .class-status-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <div class="course-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        UCS668: Edge AI and Robotics
+      </div>
+      <div class="marks-badge">
+        ★ Project 1: 10 Marks
+      </div>
+    </div>
+
+    <h1 id="ui-project-title">Edge AI & Data Center Vision: Project Tracker</h1>
+    <p class="subtitle" id="ui-project-sub">
+      Choose any concept from Modules 1–5 and demonstrate it in a gamified or creative edge-deployable application.
+    </p>
+
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Course Instructor</span>
+        <span class="meta-value">Dr. Jhilik Bhattacharya</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Submission Window</span>
+        <span class="meta-value" style="color: var(--accent-amber);">12 – 16 October (Lab Slots)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Evaluation Requirement</span>
+        <span class="meta-value">Live Demo & All Members Present</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Active Team</span>
+        <span class="meta-value" id="ui-team">Parth (Lead)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Agent Interoperability Notice -->
+  <div class="agent-banner">
+    <div class="agent-banner-text">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+      <strong>Agent-Readable Protocol:</strong> This file embeds standardized JSON data in <code>#agent-tracking-data</code>. AI agents & subagents can read, audit, and append updates directly.
+    </div>
+    <button class="agent-banner-btn" onclick="copyAgentJson()">📋 Copy JSON for Agent</button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('timeline')">
+      ⏳ Milestones Timeline <span class="badge-count" id="count-timeline">5</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('prompts')">
+      💡 Idea Prompts & Requests <span class="badge-count" id="count-prompts">1</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('commits')">
+      📦 Git Commits <span class="badge-count" id="count-commits">1</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('pipeline')">📐 Architecture & Pipeline <span class="badge-count" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald);">NEW</span></button>
+    <button class="tab-btn" onclick="switchTab('modules')">
+      🎯 Course Modules 1-5 <span class="badge-count" id="count-modules">5</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('raw-json')">
+      🤖 Agent Raw JSON Data
+    </button>
+  </div>
+
+  
+  <!-- TAB: Visual Architecture & Pipeline -->
+  <div id="tab-pipeline" class="tab-panel">
+    <div class="pipeline-container">
+      
+      <!-- Section 1: End-to-End System Pipeline -->
+      <div>
+        <div class="pipeline-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          1. Complete End-to-End Edge Vision Telemetry Pipeline
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Visual inspection workflow modeling automated data center equipment analysis under real-time edge latency budgets (Poisson arrival $\lambda = 25\text{ FPS}$ into an /D/1$ queue).
+        </p>
+        <div class="pipeline-flow">
+          <div class="pipeline-step-card">
+            <span class="step-badge blue">Stage 01</span>
+            <div class="step-title">Visual Telemetry Stream</div>
+            <div class="step-desc">Conveyor / Rail camera streams server chassis at 25 FPS (0\text{ms}$ intervals). 24 \times 224 \times 3$ RGB tensor input.</div>
+            <div class="step-meta">Input: (B, 3, 224, 224)</div>
+          </div>
+
+          <div class="pipeline-step-card">
+            <span class="step-badge amber">Stage 02</span>
+            <div class="step-title">Augmentation Hazards</div>
+            <div class="step-desc">Environmental server room noise: Heat Haze (sinusoidal warp), Strobe LED Glare, and Intake Particulate Dust.</div>
+            <div class="step-meta">Covariate Shift Stress</div>
+          </div>
+
+          <div class="pipeline-step-card">
+            <span class="step-badge rose">Stage 03</span>
+            <div class="step-title">M/D/1 Queue Buffer</div>
+            <div class="step-desc">10-Slot FIFO queue. If service latency exceeds 0\text{ms}$, buffer overflows ( \to 10$) causing dropped frames & penalties!</div>
+            <div class="step-meta">Capacity: N_max = 10</div>
+          </div>
+
+          <div class="pipeline-step-card">
+            <span class="step-badge purple">Stage 04</span>
+            <div class="step-title">Multi-Model Edge Zoo</div>
+            <div class="step-desc">Dynamic backbone switcher: SqueezeNet (4.2ms) vs MobileNetV2 (11.5ms) vs ResNet-18 (44.0ms).</div>
+            <div class="step-meta">Params: 1.2M - 11.2M</div>
+          </div>
+
+          <div class="pipeline-step-card">
+            <span class="step-badge emerald">Stage 05</span>
+            <div class="step-title">Live Diagnostics Engine</div>
+            <div class="step-desc">Real-time 5x5 Normalized Confusion Matrix, Expected Calibration Error (ECE), Macro F1, and Pareto Frontier graph.</div>
+            <div class="step-meta">5 Classes Evaluated</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: 16-Bit Parallax World & NPC Layering -->
+      <div>
+        <div class="pipeline-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          2. 16-Bit Parallax Pixel-Art World & Cartoon NPC Architecture
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Multi-layer 60 FPS Canvas parallax engine depicting the secret Mountain Edge-AI Observatory with animated retro cartoon NPCs.
+        </p>
+        <div class="parallax-visual-stack">
+          <div class="layer-strip">
+            <div class="layer-info">
+              <span class="layer-badge">Layer 1 (Far Sky)</span>
+              <div>
+                <div class="layer-name">Drifting Pixel Cumulus Clouds</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Azure blue sky with multi-tiered volumetric pixel clouds</div>
+              </div>
+            </div>
+            <div class="layer-velocity">Velocity: v = 0.2 px/frame</div>
+          </div>
+
+          <div class="layer-strip">
+            <div class="layer-info">
+              <span class="layer-badge">Layer 2 (Background)</span>
+              <div>
+                <div class="layer-name">Snow-Capped Alpine Mountain Peaks</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Majestic mountain ridges with sharp 16-bit cel-shaded lighting</div>
+              </div>
+            </div>
+            <div class="layer-velocity">Velocity: v = 0.5 px/frame</div>
+          </div>
+
+          <div class="layer-strip">
+            <div class="layer-info">
+              <span class="layer-badge">Layer 3 (Midground)</span>
+              <div>
+                <div class="layer-name">Rolling Emerald Plains & Pine Forests</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Lush green terrain, conifer groves, and atmospheric depth</div>
+              </div>
+            </div>
+            <div class="layer-velocity">Velocity: v = 1.2 px/frame</div>
+          </div>
+
+          <div class="layer-strip" style="border-color: rgba(6, 182, 212, 0.4); background: rgba(6, 182, 212, 0.05);">
+            <div class="layer-info">
+              <span class="layer-badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan);">Layer 4 (Foreground)</span>
+              <div>
+                <div class="layer-name">Rocky Cliff, Dirt Path & Animated Cartoon NPCs</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Skipper & Kowalski at terminal, Courage panic-shaking, Pink Panther sneaking, Oggy chasing bugs</div>
+              </div>
+            </div>
+            <div class="layer-velocity">Velocity: v = 2.4 px/frame (60 FPS)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: The 5 Inspection Target Classes -->
+      <div>
+        <div class="pipeline-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          3. The 5 Data Center Vision Target Classes
+        </div>
+        <div class="classes-grid">
+          <div class="class-card">
+            <span class="class-id">CLASS 0</span>
+            <div class="class-name">Optimal_Rack</div>
+            <div class="class-symptom">Normal operating status, green blinking activity LEDs, clean intake vents.</div>
+            <span class="class-status-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">Healthy (Normal)</span>
+          </div>
+
+          <div class="class-card" style="border-color: rgba(239, 68, 68, 0.35);">
+            <span class="class-id" style="color: var(--accent-rose);">CLASS 1</span>
+            <div class="class-name">Thermal_Hotspot</div>
+            <div class="class-symptom">Overheating PSU/blade, false-color IR signature, emergency thermal alert.</div>
+            <span class="class-status-badge" style="background: rgba(239, 68, 68, 0.15); color: var(--accent-rose);">Critical Hazard</span>
+          </div>
+
+          <div class="class-card" style="border-color: rgba(245, 158, 11, 0.35);">
+            <span class="class-id" style="color: var(--accent-amber);">CLASS 2</span>
+            <div class="class-name">Cable_Bend_Violation</div>
+            <div class="class-symptom">Optical fiber bent beyond critical bend radius ( < 30\text{mm}$), attenuation risk.</div>
+            <span class="class-status-badge" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">Attenuation Risk</span>
+          </div>
+
+          <div class="class-card">
+            <span class="class-id">CLASS 3</span>
+            <div class="class-name">Port_LED_Error</div>
+            <div class="class-symptom">Switch port Amber/Red blinking error status or link-down disconnection.</div>
+            <span class="class-status-badge" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">Link Disconnect</span>
+          </div>
+
+          <div class="class-card">
+            <span class="class-id">CLASS 4</span>
+            <div class="class-name">Intake_Dust_Clogged</div>
+            <div class="class-symptom">Server chassis perforated intake blocked by particulate debris, airflow restricted.</div>
+            <span class="class-status-badge" style="background: rgba(100, 116, 139, 0.2); color: var(--text-muted);">Airflow Impaired</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Architecture Trade-Off Matrix -->
+      <div>
+        <div class="pipeline-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          4. Edge Compute vs. Representational Capacity Trade-Off Matrix
+        </div>
+        <div class="commits-table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Architectural Paradigm</th>
+                <th>Parameters</th>
+                <th>Compute (FLOPs)</th>
+                <th>CPU Latency</th>
+                <th>Queue Impact</th>
+                <th>Failure Mode</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 700; color: #fff;">SqueezeNet v1.1</td>
+                <td>Fire Modules ( \times 1$ squeeze +  \times 3$ expand)</td>
+                <td><span class="commit-hash">1.24M</span></td>
+                <td>350 MFLOPs</td>
+                <td style="color: var(--accent-emerald); font-weight: 700;">~4.2 ms</td>
+                <td>(t) \to 0$ (Drained)</td>
+                <td style="color: var(--accent-amber);">High False Negatives (misses cable bends)</td>
+              </tr>
+              <tr style="background: rgba(6, 182, 212, 0.05);">
+                <td style="font-weight: 700; color: var(--accent-cyan);">MobileNetV2 (Sweet Spot)</td>
+                <td>Inverted Residuals + Depthwise Separable</td>
+                <td><span class="commit-hash" style="color: var(--accent-cyan);">3.47M</span></td>
+                <td>300 MFLOPs</td>
+                <td style="color: var(--accent-cyan); font-weight: 700;">~11.5 ms</td>
+                <td>(t) \in [1, 3]$ (Stable)</td>
+                <td style="color: var(--accent-emerald); font-weight: 600;">Optimal Accuracy vs Latency Frontier</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 700; color: #fff;">ResNet-18</td>
+                <td>Residual Stages + Identity Skip Connections</td>
+                <td><span class="commit-hash" style="color: var(--accent-rose);">11.18M</span></td>
+                <td>1.82 GFLOPs</td>
+                <td style="color: var(--accent-rose); font-weight: 700;">~44.0 ms</td>
+                <td style="color: var(--accent-rose); font-weight: 700;">(t) \to 10$ (OVERFLOW)</td>
+                <td style="color: var(--accent-rose);">Dropped Frames &amp; Thermal Runaway Penalty</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB 1: Timeline -->
+  <div id="tab-timeline" class="tab-panel active">
+    <div class="timeline-container" id="timeline-list">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- TAB 2: Idea Prompts -->
+  <div id="tab-prompts" class="tab-panel">
+    <div class="prompts-grid" id="prompts-list">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- TAB 3: Commits -->
+  <div id="tab-commits" class="tab-panel">
+    <div class="commits-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Commit Hash</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+            <th>Author</th>
+            <th>Files</th>
+          </tr>
+        </thead>
+        <tbody id="commits-list">
+          <!-- Injected via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4: Modules 1-5 Alignment -->
+  <div id="tab-modules" class="tab-panel">
+    <div class="modules-grid" id="modules-list">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- TAB 5: Raw JSON / Agent Interface -->
+  <div id="tab-raw-json" class="tab-panel">
+    <div class="json-box-wrapper">
+      <div class="json-actions">
+        <div>
+          <strong style="color: #fff;">Machine-Readable Data Island (<code>#agent-tracking-data</code>)</strong>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Agents can parse this JSON to extract history or append new events.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="copyAgentJson()">Copy Raw JSON</button>
+      </div>
+      <pre><code id="json-preview">Loading...</code></pre>
+    </div>
+  </div>
+
+  <footer>
+    UCS668 Edge AI and Robotics | Data Center Vision | Submission Portal & Project Tracker
+  </footer>
+</div>
+
+<!-- ========================================================================= -->
+<!-- AGENT MACHINE-READABLE DATA ISLAND (SINGLE SOURCE OF TRUTH)              -->
+<!-- Instructions for Agents:                                                  -->
+<!-- 1. Parse JSON inside script#agent-tracking-data                           -->
+<!-- 2. To append a commit, add an object to data.commits                      -->
+<!-- 3. To record a prompt, add an object to data.idea_prompts                 -->
+<!-- 4. To update a milestone status, mutate data.timeline                     -->
+<!-- ========================================================================= -->
+<script id="agent-tracking-data" type="application/json">
+{
+  "project": {
+    "title": "Data Center Edge-Vision Commander (UCS668 Project 1)",
+    "course_code": "UCS668",
+    "course_name": "Edge AI and Robotics: Data Center Vision",
+    "instructor": "Dr. Jhilik Bhattacharya",
+    "marks": 10,
+    "group_size_allowed": "1-4 students",
+    "submission_window": "12-16 October 2026 (In Lab Slots)",
+    "status": "Implementation - Architecture & Model Pipeline (Project 3)",
+    "team_members": [
+      "Parth"
+    ],
+    "course_url": "https://sites.google.com/thapar.edu/jhilikbhattacharya/courses/edge-ai-and-robotics-data-center-vision?pli=1&",
+    "repo_path": "/home/kalki/Pro/DC_project",
+    "selected_project": "Project 3: Data Center Edge-Vision Commander: The Latency vs. Accuracy Sim"
+  },
+  "course_modules_coverage": [
+    {
+      "module": 1,
+      "title": "Understanding the Vision Problem",
+      "status": "Core Implemented",
+      "summary": "Task formulation: Real-time automated visual inspection of data center infrastructure under strict edge latency budgets (M/D/1 queueing).",
+      "project_hook": "Multi-class defect detection: Normal Rack, Thermal Hotspot, Cable Bend Violation, Port LED Error, Intake Dust Clog."
+    },
+    {
+      "module": 2,
+      "title": "Building Your First Vision Model",
+      "status": "Core Implemented",
+      "summary": "Model zoo with transfer learning: Lightweight SqueezeNet v1.1 vs MobileNetV2 vs ResNet-18.",
+      "project_hook": "Dynamic runtime switching between edge backbones with CPU latency & FLOP profiling."
+    },
+    {
+      "module": 3,
+      "title": "Neural Network Design & Architectures",
+      "status": "Core Implemented",
+      "summary": "Fire modules vs Inverted Residual blocks (Depthwise Separable Conv) vs Residual skip connections. Parameter counts (1.2M vs 3.5M vs 11.2M) & tensor downsampling.",
+      "project_hook": "Live layer-by-layer tensor shape inspector and receptive field telemetry."
+    },
+    {
+      "module": 4,
+      "title": "Data Augmentation (Environmental Storms)",
+      "status": "Core Implemented",
+      "summary": "Dynamic environmental perturbations: Server heat haze (sinusoidal warp), strobe LED glare, intake dust noise, motion blur.",
+      "project_hook": "Player deployable edge preprocessing filters (CLAHE, edge sharpening, denoising) within microsecond time budget."
+    },
+    {
+      "module": 5,
+      "title": "Training, Optimization & Metrics",
+      "status": "Core Implemented",
+      "summary": "Cross-Entropy loss, calibration error (ECE), 5-class normalized Confusion Matrix, Macro F1, and Pareto Frontier optimization.",
+      "project_hook": "Live interactive Confusion Matrix and Accuracy vs Latency vs Energy Pareto frontier."
+    }
+  ],
+  "idea_prompts": [
+    {
+      "id": "PROMPT-001",
+      "timestamp": "2026-10-14T01:49:07+05:30",
+      "source": "User / Professor Specification",
+      "prompt": "Project 1: 10 marks\nGroups of max 4 students (1, 2,or 3 students also allowed in a group)\nSubmission: 12-16 October in your respective lab slots.\nCome prepared with the demo.\nAll members need to be present during showcasing it.\n\nExample topic:- Choose any concept in this course and demonstrate it in a gamified or creative manner.\nEx. a) A game which displays object mosaics, any object is randomly augmented and you need to find the matching object.\nb) Magic eraser",
+      "status": "Active / Selected for Implementation",
+      "notes": "Analyzing 3 high-impact gamified implementations matching Modules 1-5 with interactive Streamlit demo."
+    },
+    {
+      "id": "PROMPT-002",
+      "timestamp": "2026-10-14T18:16:00+05:30",
+      "source": "User (AI Engineer)",
+      "prompt": "Selected Project 3: Data Center Edge-Vision Commander (Latency vs Accuracy Sim). Requested in-depth technical details (confusion matrix, edge models, queueing dynamics), repository initialization, and tracker update.",
+      "status": "In Active Development",
+      "notes": "Project 3 perfectly aligns with course name (Data Center Vision), Modules 1-5, and has zero clones on GitHub."
+    },
+    {
+      "id": "PROMPT-003",
+      "timestamp": "2026-10-14T18:24:00+05:30",
+      "source": "User / Agent Collaboration",
+      "prompt": "Switch frontend from Streamlit to Astro v5 + React 19. Generate production PROMPT.md for Claude Opus with mathematical M/D/1 queue formulation, PyTorch model zoo, live 5x5 Confusion Matrix, and high-tech telemetry theme.",
+      "status": "Completed & Documented",
+      "notes": "PROMPT.md generated at root. Includes full viva talking points and component breakdowns."
+    },
+    {
+      "id": "PROMPT-004",
+      "timestamp": "2026-10-14T18:49:00+05:30",
+      "source": "User / Agent Collaboration",
+      "prompt": "Refined PROMPT.md to be 100% frontend-focused for Claude Opus. Contains complete 16-bit parallax pixel art landscape, cartoon NPC walk cycles with cursor eye tracking, and arcade vision telemetry overlay with standalone simulation.",
+      "status": "Completed & Documented",
+      "notes": "Frontend prompt saved to PROMPT.md for direct handoff to Claude Opus."
+    },
+    {
+      "id": "PROMPT-005",
+      "timestamp": "2026-10-14T18:56:00+05:30",
+      "source": "User / Agent Collaboration",
+      "prompt": "Added comprehensive graphical explanations, visual 5-stage pipeline flow, 16-bit parallax visual stack, 5-class defect catalog, and model trade-off matrix to track.html.",
+      "status": "Completed & Documented",
+      "notes": "track.html now has a dedicated Architecture & Pipeline tab with high-impact visual diagrams."
+    }
+  ],
+  "timeline": [
+    {
+      "id": "TL-001",
+      "date": "2026-10-14",
+      "milestone": "Project Initialization & Agent Tracker Setup",
+      "description": "Scraped course syllabus (Modules 1-5), initialized Git repository, created machine-readable track.html and sync CLI.",
+      "status": "Completed"
+    },
+    {
+      "id": "TL-002",
+      "date": "2026-10-14",
+      "milestone": "Concept Finalized: Data Center Edge-Vision Commander",
+      "description": "Selected Project 3. Architecture designed: 3-model edge zoo (SqueezeNet, MobileNetV2, ResNet-18), M/D/1 edge queue simulator, Augmentation Storms, and live Confusion Matrix.",
+      "status": "Completed"
+    },
+    {
+      "id": "TL-003",
+      "date": "2026-10-14",
+      "milestone": "Architecture Blueprint & PROMPT.md Ready",
+      "description": "Created comprehensive prompt specification (PROMPT.md) for Claude Opus covering Astro + React 19 + FastAPI + PyTorch stack.",
+      "status": "Completed"
+    },
+    {
+      "id": "TL-004",
+      "date": "2026-10-15",
+      "milestone": "Pipeline & Architecture Fully Documented in track.html",
+      "description": "Added visual 5-stage pipeline, 16-bit parallax world breakdown, 5 defect classes, and trade-off matrix.",
+      "status": "Completed"
+    },
+    {
+      "id": "TL-005",
+      "date": "2026-10-15",
+      "milestone": "Frontend Implementation & Lab Demo Readiness",
+      "description": "Proceed with Claude Opus prompt execution, Astro + React 19 component wiring, and lab evaluation rehearsal.",
+      "status": "In Progress"
+    }
+  ],
+  "commits": [
+    {
+      "hash": "5c1c4646",
+      "timestamp": "2026-10-14T01:53:47+05:30",
+      "author": "Parth <parthsvault@gmail.com>",
+      "message": "chore: sync initial commit hash to track.html",
+      "files": [
+        "track.html"
+      ]
+    },
+    {
+      "hash": "deb0e381",
+      "timestamp": "2026-10-14T01:53:30+05:30",
+      "author": "Parth <parthsvault@gmail.com>",
+      "message": "feat: initialize project tracking, track.html, and sync utility",
+      "files": [
+        "(root)"
+      ]
+    }
+  ],
+  "agent_instructions": {
+    "protocol": "Antigravity Agentic Tracking Protocol v1.0",
+    "read_method": "JSON.parse(document.getElementById('agent-tracking-data').textContent)",
+    "write_method": "Update JSON text inside #agent-tracking-data, or run python sync_tracker.py",
+    "required_fields": [
+      "project",
+      "course_modules_coverage",
+      "idea_prompts",
+      "timeline",
+      "commits"
+    ]
+  }
+}
+</script>
+
+<script>
+  // DOM Rendering logic
+  function renderAll() {
+    const rawData = document.getElementById('agent-tracking-data').textContent;
+    const data = JSON.parse(rawData);
+
+    // Update Meta
+    document.getElementById('ui-project-title').textContent = data.project.title;
+    document.getElementById('ui-team').textContent = data.project.team_members.join(', ');
+
+    // Update Counts
+    document.getElementById('count-timeline').textContent = data.timeline.length;
+    document.getElementById('count-prompts').textContent = data.idea_prompts.length;
+    document.getElementById('count-commits').textContent = data.commits.length;
+    document.getElementById('count-modules').textContent = data.course_modules_coverage.length;
+
+    // Render Timeline
+    const tlContainer = document.getElementById('timeline-list');
+    tlContainer.innerHTML = '';
+    data.timeline.forEach(item => {
+      const statusClass = item.status.toLowerCase().replace(/\s+/g, '-');
+      const card = document.createElement('div');
+      card.className = 'timeline-card';
+      card.innerHTML = `
+        <div class="timeline-dot ${statusClass}"></div>
+        <div class="timeline-header">
+          <div class="timeline-title">${item.milestone}</div>
+          <span class="status-pill ${statusClass}">${item.status}</span>
+        </div>
+        <div class="timeline-date">${item.date} &bull; ${item.id}</div>
+        <div class="timeline-desc">${item.description}</div>
+      `;
+      tlContainer.appendChild(card);
+    });
+
+    // Render Prompts
+    const promptsContainer = document.getElementById('prompts-list');
+    promptsContainer.innerHTML = '';
+    data.idea_prompts.forEach((p, idx) => {
+      const card = document.createElement('div');
+      card.className = `prompt-card ${idx === 0 ? 'highlight' : ''}`;
+      card.innerHTML = `
+        <div class="prompt-card-header">
+          <span class="prompt-id">${p.id}</span>
+          <span class="prompt-source">${p.source}</span>
+        </div>
+        <div class="prompt-text">${p.prompt}</div>
+        <div class="prompt-notes"><strong>Analysis:</strong> ${p.notes}</div>
+        <div class="prompt-footer">
+          <span>Status: <strong>${p.status}</strong></span>
+          <span>${p.timestamp}</span>
+        </div>
+      `;
+      promptsContainer.appendChild(card);
+    });
+
+    // Render Commits
+    const commitsContainer = document.getElementById('commits-list');
+    commitsContainer.innerHTML = '';
+    data.commits.forEach(c => {
+      const row = document.createElement('tr');
+      const filesBadges = (c.files || []).map(f => `<span class="file-tag">${f}</span>`).join(' ');
+      row.innerHTML = `
+        <td><span class="commit-hash">${c.hash}</span></td>
+        <td style="font-weight: 500; color: #fff;">${c.message}</td>
+        <td style="color: var(--text-muted); font-size: 0.8rem;">${c.timestamp}</td>
+        <td style="color: var(--text-secondary);">${c.author}</td>
+        <td><div class="commit-files">${filesBadges}</div></td>
+      `;
+      commitsContainer.appendChild(row);
+    });
+
+    // Render Modules
+    const modulesContainer = document.getElementById('modules-list');
+    modulesContainer.innerHTML = '';
+    data.course_modules_coverage.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'module-card';
+      card.innerHTML = `
+        <div class="module-header">
+          <span class="module-num">Module ${m.module}</span>
+          <span class="status-pill completed">${m.status}</span>
+        </div>
+        <div class="module-title">${m.title}</div>
+        <div class="module-details">${m.summary}</div>
+        <div style="font-size: 0.82rem; color: var(--accent-cyan); margin-top: 6px;">
+          <strong>Project Integration:</strong> ${m.project_hook}
+        </div>
+      `;
+      modulesContainer.appendChild(card);
+    });
+
+    // Render Raw JSON Box
+    document.getElementById('json-preview').textContent = JSON.stringify(data, null, 2);
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+    event.currentTarget.classList.add('active');
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+  }
+
+  function copyAgentJson() {
+    const rawData = document.getElementById('agent-tracking-data').textContent;
+    navigator.clipboard.writeText(rawData.trim()).then(() => {
+      alert('Agent Tracking JSON copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', renderAll);
+</script>
+
+</body>
+</html>

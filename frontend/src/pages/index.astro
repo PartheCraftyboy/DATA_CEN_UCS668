@@ -1,0 +1,95 @@
+---
+/**
+ * The cockpit page. Everything below <Cockpit /> is static HTML rendered at
+ * build time, so the course context is readable before any React runs.
+ */
+import Layout from "../layouts/Layout.astro";
+import Cockpit from "../components/Cockpit.tsx";
+
+const modules = [
+  ["Module 1", "The vision problem", "Five rack conditions under hard limits: frames arrive at 25 fps, the buffer holds 10, each frame has 40 ms."],
+  ["Module 2", "First vision models", "SqueezeNet v1.1, MobileNetV2 and ResNet-18 from torchvision, re-headed for 5 classes and switchable live."],
+  ["Module 3", "Network architectures", "Fire modules, inverted residuals and residual stages, with measured parameters, MACs and the 224 → 7 resolution cascade."],
+  ["Module 4", "Data augmentation", "Heat haze, glare and dust against CLAHE, unsharp and bilateral filters that each cost real milliseconds."],
+  ["Module 5", "Metrics", "Confusion matrix, macro-F1, cross-entropy, calibration error and the speed/accuracy/power trade-off."],
+];
+---
+
+<Layout>
+  <Cockpit client:load />
+
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6">
+    <section class="section grid gap-x-10 gap-y-6 lg:grid-cols-3" aria-labelledby="argument-title">
+      <h2 id="argument-title" class="sr-only">The argument</h2>
+      <div>
+        <h3 class="section__title">A model is not a system</h3>
+        <p class="mt-2 max-w-[62ch] text-xs leading-relaxed text-muted">
+          ResNet-18 is 97.6% accurate and still fails. At 44 ms per frame it serves 22.7 fps against a 25 fps
+          camera, so ρ = 1.10, the buffer fills, and frames are dropped. Those racks are never inspected. Accuracy
+          measured only on the frames a model sees is a survivorship statistic.
+        </p>
+      </div>
+      <div>
+        <h3 class="section__title">Speed is not free either</h3>
+        <p class="mt-2 max-w-[62ch] text-xs leading-relaxed text-muted">
+          SqueezeNet runs in 4.5 ms and never queues. With 0.73M parameters it can't represent a fiber bend through
+          heat haze, so its missed-defect rate climbs under bad conditions. It drops nothing and still misses racks.
+        </p>
+      </div>
+      <div>
+        <h3 class="section__title">The middle option has room to spare</h3>
+        <p class="mt-2 max-w-[62ch] text-xs leading-relaxed text-muted">
+          MobileNetV2 separates spatial filtering from channel mixing, cutting multiply-adds from 1.8 billion to 0.3 billion while keeping
+          enough capacity to stay robust. At 11.5 ms it leaves 28.5 ms for a filter when conditions get worse.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="modules-title">
+      <h2 id="modules-title" class="section__title mb-3">Course coverage</h2>
+      <dl class="grid gap-x-10 gap-y-3 text-xs sm:grid-cols-2 xl:grid-cols-5">
+        {
+          modules.map(([id, title, body]) => (
+            <div>
+              <dt>
+                <span class="text-muted">{id}</span> {title}
+              </dt>
+              <dd class="mt-1 leading-relaxed text-muted">{body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="section grid gap-x-10 gap-y-4 md:grid-cols-2" aria-labelledby="honesty-title">
+      <h2 id="honesty-title" class="sr-only">What is measured and what is modelled</h2>
+      <div>
+        <h3 class="section__title">Measured on real hardware</h3>
+        <ul class="mt-2 space-y-0.5 text-xs text-muted">
+          <li>Parameter counts, from the live PyTorch model</li>
+          <li>MACs and FLOPs, from forward hooks on real tensor shapes</li>
+          <li>The layer-by-layer resolution cascade</li>
+          <li>Inference latency, timed around a real forward pass</li>
+          <li>Filter cost, from real filter execution</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="section__title">Modelled</h3>
+        <p class="mt-2 max-w-[62ch] text-xs leading-relaxed text-muted">
+          Which class each model predicts, and how confident it is. The networks are not trained on rack images
+          because no labelled dataset exists, so predictions come from a documented model of how accuracy falls
+          with capacity and image degradation. Latency is real. Nothing here claims to be a trained detector.
+        </p>
+      </div>
+    </section>
+
+    <footer class="section flex flex-wrap justify-between gap-x-6 gap-y-2 pb-8 text-xs text-muted">
+      <p>Edge-Vision Commander, UCS668 Edge AI and Robotics, Thapar Institute of Engineering and Technology</p>
+      <p class="flex flex-wrap gap-x-4 gap-y-1">
+        <span><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> model</span>
+        <span><kbd>space</kbd> hold</span>
+        <span><kbd>r</kbd> reset</span>
+      </p>
+    </footer>
+  </div>
+</Layout>
